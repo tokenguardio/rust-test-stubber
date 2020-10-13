@@ -1,6 +1,7 @@
 use std::{fs, io, io::Read, io::Write};
 use syn::export::Span;
 extern crate quote;
+use quote::*;
 
 #[derive(Debug)]
 pub enum Error {
@@ -16,6 +17,12 @@ pub fn process_file(in_path: &str, out_path: &str) -> Result<()> {
     let mut out = fs::File::create(out_path).map_err(|e| Error::IOError(e))?;
     out.write_fmt(format_args!("{}", quote::quote!(#file))).map_err(|e| Error::IOError(e))?;
     Ok(())
+}
+
+pub fn process_string(contents: String) -> Result<String> {
+    let mut file = syn::parse_file(&contents).map_err(|e| Error::ParseError(e))?;
+    prepend_test_mod(&mut file);
+    Ok(format!("{}", quote::quote!(#file)))
 }
 
 /// Loads file in a Result.
@@ -101,12 +108,37 @@ fn traverse_items(items: Vec<syn::Item>) -> syn::ItemMod {
         })
         .collect();
 
+    let impl_stubs: Vec<syn::ItemFn> = items
+        .clone()
+        .into_iter()
+        .filter_map(|it| match it {
+            syn::Item::Impl(ipl) if ipl.trait_.is_none() => Some(ipl),
+            _ => None
+        })
+        .flat_map(|ipl| {
+            let ty = ipl.self_ty;
+            ipl.items
+                .into_iter()
+                .filter_map(move |it| match it {
+                    syn::ImplItem::Method(m) => {
+                        let fmted = 
+                            format!("{}_{}", 
+                                quote!(#ty), 
+                                &m.sig.ident.to_string());
+                        Some(gen_method_stub(&fmted))
+                    },
+                    _ => None
+                })
+        })
+        .collect();
+
     syn::parse_quote! {
         #[cfg(test)]
         mod should {
             #(#structs)*
             #(#impls)*
             #(#fn_stubs)*
+            #(#impl_stubs)*
         }
     }
 }
