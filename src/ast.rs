@@ -1,12 +1,24 @@
 /// This module contains functions that allows to create test stubs.
 use quote::quote;
-use syn::export::Span;
+use syn::{export::Span};
 use syn::Ident;
 
 pub fn process_string(content: String) -> Result<String, syn::Error> {
     let mut file = syn::parse_file(&content)?;
-    file.items.push(syn::Item::Mod(traverse_items(&file.items)));
+    let mut items = remove_old_mod(file.items.clone());
+    items.push(syn::Item::Mod(traverse_items(&file.items)));
+    file.items.clear();
+    items.into_iter().for_each(|it| file.items.push(it));
     Ok(format!("{}", quote!(#file)))
+}
+
+fn remove_old_mod(vec: Vec<syn::Item>) -> Vec<syn::Item> {
+    vec.into_iter()
+        .filter(|it| match it {
+            syn::Item::Mod(m) if m.ident.to_string() == "should" => false,
+            _ => true
+        })
+        .collect()
 }
 
 /// Traverses file item by item, generating test module that contains method stubs
@@ -94,9 +106,7 @@ fn gen_trait_stub(item_trait: syn::ItemTrait) -> (syn::ItemStruct, syn::ItemImpl
                     defaultness: None,
                     sig: method.sig,
                     block: syn::parse_quote! {
-                        {
-
-                        }
+                        {}
                     }
                 }),
             _ => None,
@@ -106,9 +116,10 @@ fn gen_trait_stub(item_trait: syn::ItemTrait) -> (syn::ItemStruct, syn::ItemImpl
     let ast_struct: syn::ItemStruct = syn::parse_quote! {
         struct #fake_struct_id;
     };
-    
+    // trace_macros!(true);
+    let trait_name = item_trait.ident;
     let ast_impl: syn::ItemImpl = syn::parse_quote! {
-        impl #(item_trait.ident) for #fake_struct_id {
+        impl #trait_name for #fake_struct_id {
             #(#stubs)*
         }
     };

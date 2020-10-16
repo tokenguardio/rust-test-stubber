@@ -9,13 +9,14 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [ "*"
+	"activationEvents": [
+		"onCommand:stubber.create"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "rust-test-stubber.createStubs",
+				"command": "stubber.create",
 				"title": "Rust Test Stubber: Create Stubs"
 			}
 		]
