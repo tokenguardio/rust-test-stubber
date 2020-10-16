@@ -2,6 +2,7 @@
 use quote::quote;
 use syn::{export::Span};
 use syn::Ident;
+use regex::Regex;
 
 pub fn process_string(content: String) -> Result<String, syn::Error> {
     let mut file = syn::parse_file(&content)?;
@@ -53,14 +54,21 @@ pub fn traverse_items(items: &Vec<syn::Item>) -> syn::ItemMod {
             _ => None
         })
         .flat_map(|ipl| {
-            let ty = ipl.self_ty;
+            let ty = *ipl.self_ty;
             ipl.items
                 .into_iter()
                 .filter_map(move |it| match it {
                     syn::ImplItem::Method(m) => {
+                        let demangled_ty = {
+                            let re = Regex::new("[^a-zA-Z]+")
+                                .expect("regex should be valid");
+                            let var_name = format!("{}", quote!(#ty));
+                            let demangled = re.replace_all(&var_name, "");
+                            format!("{}", demangled)
+                        };
                         let fmted = 
                             format!("{}_{}", 
-                                quote!(#ty), 
+                                demangled_ty, 
                                 &m.sig.ident.to_string());
                         Some(gen_method_stub(&fmted))
                     },
