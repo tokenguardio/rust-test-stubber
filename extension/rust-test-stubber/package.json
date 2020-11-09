@@ -1,8 +1,15 @@
 {
 	"name": "rust-test-stubber",
-	"displayName": "rust-test-stubber",
-	"description": "Test stubs generator for Rust",
+	"displayName": "Rust Test Generator",
+	"description": "Generate test stubs with one click! This tool allows for automated generation of high quality unit test stubs in Rust langugage with simple command or click. ",
 	"version": "0.0.1",
+	"publisher": "blockhunters",
+	"keywords": ["rust", "unit test", "testing", "stubs", "generator", "test"],
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/blockhunters/rust-test-stubber.git"
+	},
+	"icon": "assets/icon.png",
 	"engines": {
 		"vscode": "^1.50.0"
 	},

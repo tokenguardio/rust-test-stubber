@@ -1,65 +1,28 @@
-# rust-test-stubber README
+# Blockhunters Rust Test Stubber [ALPHA]
 
-This is the README for your extension "rust-test-stubber". After writing up a brief description, we recommend including the following sections.
+This is an extension that allows to generate test stubs in your Rust project.
 
-## Features
+## Description
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+This is a VS Code extension that allows to generate high quality test stubs in your Rust project. 
+It generates stubs for functions, class methods and traits. 
+Each stub contains all required elements such as test methods and mock implementations of injected traits with respect to default Rust formatting.
 
-For example if there is an image subfolder under your extension project workspace:
+We suggest to generate the stubs once the whole part of code is written in a file. The extension doesn't have parsing functionality yet so it won't be able to add additional tests to new parts of the code in a file. 
 
-\!\[feature X\]\(images/feature-x.png\)
+Please note that this is a beta version and has limited functionality that will be developed gradually.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Installation guide
 
-## Requirements
+1. Install this plugin using VSCode Marketplace.
+2. Clone this project using
+   ```shell
+   $ git clone https://github.com/blockhunters/rust-test-stubber.git
+   ```
+3. Go to the root directory of that repository and run `cargo install` in console.
+4. Make sure that `~/.cargo/bin` is in your PATH variable.
+5. You can now run the stubber using command `Rust Test Stubber: Create Stubs`
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Contact
 
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This extension is brought to you by [https://blockhunters.io](https://blockhunters.io/). Feel free to contact us at [konrad.kleczkowski@blockhunters.io](mailto:konrad.kleczkowski@blockhunters.io)
